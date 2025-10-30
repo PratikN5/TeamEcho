@@ -1,0 +1,85 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: documentation_ai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - doc_ai_network
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis-stack
+    ports:
+      - "6380:6379"   # Redis client port
+      - "8001:8001"   # RedisInsight web UI (optional)
+    volumes:
+      - redis_data:/data
+    networks:
+      - doc_ai_network
+
+  ingestion-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: doc_ai_ingestion
+    command: python -m app.scripts.run_ingestion_agent
+    environment:
+      DATABASE_URL: postgresql://postgres:12345678@postgres:5432/documentation_ai
+      REDIS_HOST: redis
+      S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      GITHUB_INTEGRATION_ENABLED: true
+      GITHUB_API_TOKEN: ${GITHUB_API_TOKEN}
+      SHAREPOINT_INTEGRATION_ENABLED: ${SHAREPOINT_INTEGRATION_ENABLED:-false}
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - doc_ai_network
+
+  neo4j:
+    image: neo4j:5.11
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+
+volumes:
+  postgres_data:
+  redis_data:
+  neo4j_data:
+  neo4j_logs:
+  elasticsearch_data:
+
+networks:
+  doc_ai_network:
+    driver: bridge

@@ -1,13 +1,10 @@
 from fastapi import FastAPI
+from app.api.v1.endpoints import chat
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(
-    title="TeamEcho API",
-    description="A FastAPI project",
-    version="1.0.0"
-)
+app = FastAPI(title="Genovate API")
 
-# Configure CORS
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,10 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to TeamEcho API"}
-
+# Health check endpoint
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    return {"status": "healthy", "message": "Service is running"}
+
+# Include routers
+app.include_router(chat.router, prefix="/api/v1", tags=["chat"])
