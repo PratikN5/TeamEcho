@@ -1,0 +1,48 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+python-dotenv==1.0.0
+boto3==1.34.29
+pydantic==2.5.2
+pydantic-settings==2.1.0
+python-jose==3.3.0
+sqlalchemy
+psycopg2-binary
+python-multipart
+aiohttp
+msal
+numpy
+botocore
+boto3
+redis
+langchain
+# Core OCR and AI dependencies
+easyocr
+torch
+torchvision
+torchaudio
+
+# Document and PDF processing
+PyMuPDF          # for reading PDFs
+python-docx      # for .docx extraction
+pandas           # for Excel and table handling
+tabula-py        # for table extraction from PDFs
+camelot-py       # fallback for complex PDF tables
+
+# Image and OCR helpers
+pytesseract
+Pillow
+opencv-python
+numpy
+
+# File type detection
+python-magic
+
+# Optional utilities
+requests
+
+tabula-py
+
+
+spacy>=3.5.0
+neo4j>=5.8.0
+elasticsearch>=8.9.0
