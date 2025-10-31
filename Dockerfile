@@ -37,4 +37,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Default command
-CMD ["python", "-m", "app.scripts.run_ingestion_agent"]
+CMD ["uvicorn", "app.main:app", "--reload"]

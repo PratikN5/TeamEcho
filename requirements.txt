@@ -20,29 +20,34 @@ easyocr
 torch
 torchvision
 torchaudio
-
+ 
 # Document and PDF processing
 PyMuPDF          # for reading PDFs
 python-docx      # for .docx extraction
 pandas           # for Excel and table handling
 tabula-py        # for table extraction from PDFs
 camelot-py       # fallback for complex PDF tables
-
+ 
 # Image and OCR helpers
 pytesseract
 Pillow
 opencv-python
 numpy
-
+ 
 # File type detection
 python-magic
-
+ 
 # Optional utilities
 requests
-
+ 
 tabula-py
-
-
+ 
+ 
 spacy>=3.5.0
 neo4j>=5.8.0
 elasticsearch>=8.9.0
+chromadb>=0.4.0
+ 
+scikit-learn
+ 
+sse_starlette
